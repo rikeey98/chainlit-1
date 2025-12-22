@@ -1,7 +1,14 @@
 [project]
 name = "chainlit-1"
 version = "0.1.0"
-description = "Add your description here"
+description = "Chainlit-based MCP Agent with File Reading"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "chainlit>=1.0.0",
+    "fastmcp>=0.1.0",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.27.0",
+    "httpx-sse>=0.4.0",
+]

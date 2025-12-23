@@ -1,6 +1,6 @@
 """
-Chainlit App with MCP Integration
-Main application that provides chat UI and integrates with MCP server
+Chainlit App with MCP Tools Integration
+Main application that provides chat UI and integrates with file reading tools
 """
 import os
 import json
@@ -8,7 +8,7 @@ from typing import List, Dict, Any
 import chainlit as cl
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
-from mcp_client import MCPClient
+import mcp_tools
 
 # Load environment variables
 load_dotenv()
@@ -17,11 +17,6 @@ load_dotenv()
 client = AsyncOpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-)
-
-# Initialize MCP client
-mcp_client = MCPClient(
-    base_url=os.getenv("MCP_SERVER_URL", "http://localhost:8000")
 )
 
 # Model settings
@@ -44,8 +39,8 @@ async def start():
     # Store message history in session
     cl.user_session.set("message_history", [])
 
-    # Get available tools from MCP server
-    tools = mcp_client.get_tools_for_llm()
+    # Get available tools
+    tools = mcp_tools.get_tools_for_llm()
     cl.user_session.set("tools", tools)
 
     # Display available tools
@@ -122,8 +117,8 @@ async def main(message: cl.Message):
                 content=f"🔧 도구 호출: `{function_name}`\n인자: `{json.dumps(arguments, ensure_ascii=False)}`"
             ).send()
 
-            # Call the MCP tool
-            tool_result = mcp_client.call_tool(function_name, arguments)
+            # Call the tool
+            tool_result = mcp_tools.call_tool(function_name, arguments)
 
             # Show tool result
             result_msg = cl.Message(content="")
